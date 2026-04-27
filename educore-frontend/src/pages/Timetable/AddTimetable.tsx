@@ -1,18 +1,26 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTimetable } from '../../context/TimetableContext';
+import { useClasses } from '../../context/ClassContext';
+import { useTeachers } from '../../context/TeacherContext';
 import { Button } from '../../components/ui/button';
 import { Input } from '../../components/ui/input';
 import { AlertCircle, CheckCircle2 } from 'lucide-react';
 
 export const AddTimetable = () => {
-  const { addTimetable, loading } = useTimetable();
+  const { addTimetable, loading: timetableLoading } = useTimetable();
+  const { classes, fetchClasses } = useClasses();
+  const { teachers, fetchTeachers } = useTeachers();
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
 
-  // Hardcoded for demo purposes since we don't have all lists fetched
+  useEffect(() => {
+    fetchClasses();
+    fetchTeachers();
+  }, [fetchClasses, fetchTeachers]);
+
   const [formData, setFormData] = useState({
-    classId: 1,
-    teacherId: 1,
+    classId: '',
+    teacherId: '',
     subject: 'Mathematics',
     dayOfWeek: 1, // Monday
     startTime: '09:00',
@@ -25,7 +33,11 @@ export const AddTimetable = () => {
     setSuccess(false);
 
     try {
-      await addTimetable(formData);
+      await addTimetable({
+        ...formData,
+        classId: parseInt(formData.classId),
+        teacherId: parseInt(formData.teacherId)
+      });
       setSuccess(true);
       // Wait a moment then clear success state
       setTimeout(() => setSuccess(false), 3000);
@@ -66,20 +78,32 @@ export const AddTimetable = () => {
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Class ID</label>
-              <Input 
-                type="number" 
-                value={formData.classId} 
-                onChange={e => setFormData({...formData, classId: parseInt(e.target.value)})}
-              />
+              <label className="block text-sm font-medium text-gray-700 mb-1">Class</label>
+              <select
+                value={formData.classId}
+                onChange={e => setFormData({...formData, classId: e.target.value})}
+                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background"
+                required
+              >
+                <option value="">Select a class...</option>
+                {classes.map(cls => (
+                  <option key={cls.id} value={cls.id}>{cls.name}</option>
+                ))}
+              </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Teacher ID</label>
-              <Input 
-                type="number" 
-                value={formData.teacherId} 
-                onChange={e => setFormData({...formData, teacherId: parseInt(e.target.value)})}
-              />
+              <label className="block text-sm font-medium text-gray-700 mb-1">Teacher</label>
+              <select
+                value={formData.teacherId}
+                onChange={e => setFormData({...formData, teacherId: e.target.value})}
+                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background"
+                required
+              >
+                <option value="">Select a teacher...</option>
+                {teachers.map(teacher => (
+                  <option key={teacher.id} value={teacher.id}>{teacher.firstName} {teacher.lastName}</option>
+                ))}
+              </select>
             </div>
             <div className="col-span-2">
               <label className="block text-sm font-medium text-gray-700 mb-1">Subject</label>
@@ -117,8 +141,8 @@ export const AddTimetable = () => {
           </div>
 
           <div className="flex justify-end pt-4">
-            <Button type="submit" disabled={loading}>
-              {loading ? 'Creating...' : 'Create Entry'}
+            <Button type="submit" disabled={timetableLoading}>
+              {timetableLoading ? 'Creating...' : 'Create Entry'}
             </Button>
           </div>
         </form>
