@@ -4,6 +4,7 @@ import { AuthProvider, useAuth } from './context/AuthContext';
 import { StudentProvider } from './context/StudentContext';
 import { TimetableProvider } from './context/TimetableContext';
 import { Login } from './pages/Login';
+import { Register } from './pages/Register';
 import { Dashboard } from './pages/Dashboard';
 import { MainLayout } from './components/layout/MainLayout';
 import { StudentList } from './pages/Students/StudentList';
@@ -27,6 +28,10 @@ const AppRoutes = () => {
         <Route 
           path="/login" 
           element={!isAuthenticated ? <Login /> : <Navigate to="/" />} 
+        />
+        <Route 
+          path="/register" 
+          element={!isAuthenticated ? <Register /> : <Navigate to="/" />} 
         />
 
         {/* Protected Routes inside MainLayout */}

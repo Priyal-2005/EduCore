@@ -41,7 +41,7 @@ export class AuthService {
     }
 
     // Hash password
-    const hashedPassword = await bcrypt.hash(data.password, 12);
+    const hashedPassword = await bcrypt.hash(data.password, 10);
 
     // Create user
     const user = await this.userRepo.create({
@@ -67,6 +67,9 @@ export class AuthService {
     if (!user) {
       throw new UnauthorizedError('Invalid email or password');
     }
+
+    console.log("INPUT PASSWORD:", data.password);
+    console.log("HASHED PASSWORD:", user.password);
 
     // Compare password
     const isPasswordValid = await bcrypt.compare(data.password, user.password);
@@ -97,7 +100,7 @@ export class AuthService {
     return jwt.sign(
       { userId: user.id, email: user.email, role: user.role },
       env.jwtSecret,
-      { expiresIn: env.jwtExpiresIn }
+      { expiresIn: env.jwtExpiresIn as any }
     );
   }
 
