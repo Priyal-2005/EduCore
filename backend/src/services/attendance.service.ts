@@ -1,28 +1,32 @@
-import prisma from '../config/database';
+import { AttendanceRepository } from '../repositories/attendance.repository';
+import { StudentRepository } from '../repositories/student.repository';
+import { ClassRepository } from '../repositories/class.repository';
 import { NotFoundError } from '../utils/errors';
 
 export class AttendanceService {
+  private attendanceRepo: AttendanceRepository;
+  private studentRepo: StudentRepository;
+  private classRepo: ClassRepository;
+
+  constructor() {
+    this.attendanceRepo = new AttendanceRepository();
+    this.studentRepo = new StudentRepository();
+    this.classRepo = new ClassRepository();
+  }
+
   async markAttendance(data: any) {
-    const student = await prisma.student.findUnique({ where: { id: data.studentId } });
+    const student = await this.studentRepo.findById(data.studentId);
     if (!student) throw new NotFoundError('Student not found');
     
-    return prisma.attendance.create({
-      data: {
-        studentId: data.studentId,
-        date: new Date(data.date),
-        status: data.status,
-      }
-    });
+    return this.attendanceRepo.create(data);
   }
 
   async markBulkAttendance(data: any) {
     const date = new Date(data.date);
     
     // Check if class exists
-    const classRecord = await prisma.class.findUnique({ where: { id: data.classId } });
+    const classRecord = await this.classRepo.findById(data.classId);
     if (!classRecord) throw new NotFoundError('Class not found');
-    
-    const students = await prisma.student.findMany({ where: { classId: data.classId } });
     
     // We would map each student to the bulk data, but for simplicity:
     const attendances = data.records.map((a: any) => ({
@@ -31,39 +35,22 @@ export class AttendanceService {
       status: a.status
     }));
     
-    return prisma.attendance.createMany({
-      data: attendances,
-      skipDuplicates: true
-    });
+    return this.attendanceRepo.createMany(attendances);
   }
 
   async getAttendanceByStudent(studentId: number) {
-    return prisma.attendance.findMany({
-      where: { studentId },
-      orderBy: { date: 'desc' }
-    });
+    return this.attendanceRepo.findByStudentId(studentId);
   }
 
   async getAttendanceByClassAndDate(classId: number, date: Date) {
-    const students = await prisma.student.findMany({ where: { classId }, select: { id: true } });
-    const studentIds = students.map(s => s.id);
-    
-    return prisma.attendance.findMany({
-      where: { 
-        studentId: { in: studentIds },
-        date: new Date(date)
-      }
-    });
+    return this.attendanceRepo.findByClassAndDate(classId, date);
   }
 
   async updateAttendance(id: number, data: any) {
-    return prisma.attendance.update({
-      where: { id },
-      data: { status: data.status }
-    });
+    return this.attendanceRepo.update(id, data);
   }
 
   async deleteAttendance(id: number) {
-    return prisma.attendance.delete({ where: { id } });
+    return this.attendanceRepo.delete(id);
   }
 }
