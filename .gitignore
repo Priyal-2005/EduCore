@@ -7,8 +7,8 @@ build/
 .turbo/
 *.log
 
-educore-frontend/node_modules/
-educore-frontend/dist/
 backend/node_modules/
+educore-frontend/node_modules/
+
 backend/dist/
-backend/uploads/
+educore-frontend/dist/
