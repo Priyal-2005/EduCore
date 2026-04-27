@@ -1,0 +1,162 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// Enums
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+enum UserRole {
+  ADMIN
+  TEACHER
+  STUDENT
+  PARENT
+}
+
+enum AttendanceStatus {
+  PRESENT
+  ABSENT
+  LATE
+}
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// Models
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+model User {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  password  String
+  role      UserRole @default(STUDENT)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  student Student?
+  teacher Teacher?
+  parent  Parent?
+
+  @@map("users")
+}
+
+model Student {
+  id             Int      @id @default(autoincrement())
+  userId         Int      @unique
+  firstName      String
+  lastName       String
+  dateOfBirth    DateTime
+  enrollmentDate DateTime @default(now())
+  classId        Int?
+  parentId       Int?
+
+  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  class       Class?       @relation(fields: [classId], references: [id])
+  parent      Parent?      @relation(fields: [parentId], references: [id])
+  grades      Grade[]
+  attendances Attendance[]
+
+  @@map("students")
+}
+
+model Teacher {
+  id        Int      @id @default(autoincrement())
+  userId    Int      @unique
+  firstName String
+  lastName  String
+  subject   String
+  hireDate  DateTime @default(now())
+
+  user       User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  classes    TeacherOnClass[]
+  timetables Timetable[]
+
+  @@map("teachers")
+}
+
+model Parent {
+  id          Int    @id @default(autoincrement())
+  userId      Int    @unique
+  firstName   String
+  lastName    String
+  phoneNumber String
+
+  user     User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  children Student[]
+
+  @@map("parents")
+}
+
+model Class {
+  id      Int    @id @default(autoincrement())
+  name    String @unique // e.g., "Grade 10-A"
+  section String
+  grade   Int    // e.g., 10
+
+  students   Student[]
+  teachers   TeacherOnClass[]
+  timetables Timetable[]
+
+  @@map("classes")
+}
+
+model TeacherOnClass {
+  teacherId Int
+  classId   Int
+  subject   String
+
+  teacher Teacher @relation(fields: [teacherId], references: [id], onDelete: Cascade)
+  class   Class   @relation(fields: [classId], references: [id], onDelete: Cascade)
+
+  @@id([teacherId, classId, subject])
+  @@map("teacher_on_class")
+}
+
+model Timetable {
+  id        Int    @id @default(autoincrement())
+  classId   Int
+  teacherId Int
+  subject   String
+  dayOfWeek Int    // 1 = Monday, 7 = Sunday
+  startTime String // "09:00"
+  endTime   String // "10:00"
+
+  class   Class   @relation(fields: [classId], references: [id], onDelete: Cascade)
+  teacher Teacher @relation(fields: [teacherId], references: [id], onDelete: Cascade)
+
+  // Prevent double-booking: same teacher, same day, same start time
+  @@unique([teacherId, dayOfWeek, startTime])
+  @@map("timetables")
+}
+
+model Attendance {
+  id        Int              @id @default(autoincrement())
+  studentId Int
+  date      DateTime
+  status    AttendanceStatus @default(PRESENT)
+
+  student Student @relation(fields: [studentId], references: [id], onDelete: Cascade)
+
+  // One attendance record per student per day
+  @@unique([studentId, date])
+  @@map("attendances")
+}
+
+model Grade {
+  id        Int      @id @default(autoincrement())
+  studentId Int
+  subject   String
+  score     Float
+  maxScore  Float    @default(100)
+  examDate  DateTime
+
+  student Student @relation(fields: [studentId], references: [id], onDelete: Cascade)
+
+  @@map("grades")
+}
