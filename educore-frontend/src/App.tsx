@@ -1,4 +1,3 @@
-import React, { useEffect } from 'react';
 import { Routes, Route, Navigate, BrowserRouter } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { StudentProvider } from './context/StudentContext';
