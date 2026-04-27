@@ -18,13 +18,8 @@ export const Login = () => {
 
     try {
       const response = await api.post('/auth/login', { email, password });
-      const { user, token } = response.data; // or response.data.data depending on wrapper, but we adjusted backend to response.data directly.
-      if (user && token) {
-        login(user, token);
-      } else if (response.data.data) {
-        // Fallback if backend still uses the successResponse wrapper
-        login(response.data.data.user, response.data.data.token);
-      }
+      const { user, token } = response.data.data;
+      login(user, token);
     } catch (err: any) {
       setError(err.message || 'Login failed');
     } finally {
