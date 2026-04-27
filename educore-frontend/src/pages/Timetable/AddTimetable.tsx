@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import { useTimetableStore } from '../../store/timetableStore';
+import { useTimetable } from '../../context/TimetableContext';
 import { Button } from '../../components/ui/button';
 import { Input } from '../../components/ui/input';
 import { AlertCircle, CheckCircle2 } from 'lucide-react';
 
 export const AddTimetable = () => {
-  const { addTimetable, loading } = useTimetableStore();
+  const { addTimetable, loading } = useTimetable();
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
 

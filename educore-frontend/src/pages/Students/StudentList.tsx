@@ -1,11 +1,11 @@
 import React, { useEffect } from 'react';
-import { useStudentStore } from '../../store/studentStore';
+import { useStudents } from '../../context/StudentContext';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '../../components/ui/button';
 import { Plus, Search } from 'lucide-react';
 
 export const StudentList = () => {
-  const { students, loading, error, fetchStudents } = useStudentStore();
+  const { students, loading, error, fetchStudents } = useStudents();
   const navigate = useNavigate();
 
   useEffect(() => {

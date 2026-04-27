@@ -1,9 +1,9 @@
 import React from 'react';
-import { useAuthStore } from '../store/authStore';
+import { useAuth } from '../../context/AuthContext';
 import { Users, GraduationCap, Calendar, CheckSquare } from 'lucide-react';
 
 export const Dashboard = () => {
-  const { user } = useAuthStore();
+  const { user } = useAuth();
 
   const stats = [
     { title: 'Total Students', value: '150', icon: <Users size={24} />, color: 'bg-blue-500' },

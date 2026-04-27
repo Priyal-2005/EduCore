@@ -1,6 +1,8 @@
 import React, { useEffect } from 'react';
 import { Routes, Route, Navigate, BrowserRouter } from 'react-router-dom';
-import { useAuthStore } from './store/authStore';
+import { AuthProvider, useAuth } from './context/AuthContext';
+import { StudentProvider } from './context/StudentContext';
+import { TimetableProvider } from './context/TimetableContext';
 import { Login } from './pages/Login';
 import { Dashboard } from './pages/Dashboard';
 import { MainLayout } from './components/layout/MainLayout';
@@ -15,8 +17,8 @@ const Placeholder = ({ title }: { title: string }) => (
   </div>
 );
 
-export const App = () => {
-  const { isAuthenticated } = useAuthStore();
+const AppRoutes = () => {
+  const { isAuthenticated } = useAuth();
 
   return (
     <BrowserRouter>
@@ -49,6 +51,18 @@ export const App = () => {
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
     </BrowserRouter>
+  );
+};
+
+export const App = () => {
+  return (
+    <AuthProvider>
+      <StudentProvider>
+        <TimetableProvider>
+          <AppRoutes />
+        </TimetableProvider>
+      </StudentProvider>
+    </AuthProvider>
   );
 };
 

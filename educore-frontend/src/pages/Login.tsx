@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import { useAuthStore } from '../store/authStore';
+import { useAuth } from '../../context/AuthContext';
 import api from '../services/api';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 
 export const Login = () => {
-  const { login } = useAuthStore();
+  const { login } = useAuth();
   const [email, setEmail] = useState('admin@educore.com');
   const [password, setPassword] = useState('password123');
   const [error, setError] = useState('');
