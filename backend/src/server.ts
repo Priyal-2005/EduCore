@@ -24,7 +24,7 @@ const app = express();
 
 // ── Security ──
 app.use(helmet());
-app.use(cors({ origin: env.corsOrigin, credentials: true }));
+app.use(cors({ origin: env.corsOrigin || 'http://localhost:5173', credentials: true }));
 
 // ── Body parsing ──
 app.use(express.json());
