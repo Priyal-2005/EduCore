@@ -25,7 +25,7 @@ export class AttendanceService {
     const students = await prisma.student.findMany({ where: { classId: data.classId } });
     
     // We would map each student to the bulk data, but for simplicity:
-    const attendances = data.attendances.map((a: any) => ({
+    const attendances = data.records.map((a: any) => ({
       studentId: a.studentId,
       date,
       status: a.status

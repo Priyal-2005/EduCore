@@ -70,5 +70,6 @@ router.post('/login', validateRequest(loginSchema), controller.login.bind(contro
  *       401: { description: Unauthorized }
  */
 router.get('/profile', authMiddleware, controller.getProfile.bind(controller));
+router.get('/me', authMiddleware, controller.getProfile.bind(controller));
 
 export default router;
