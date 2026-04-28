@@ -35,7 +35,7 @@ router.post(
  *     responses:
  *       200: { description: List of teachers }
  */
-router.get('/', authMiddleware, controller.getAll.bind(controller));
+router.get('/', authMiddleware, authorizeRoles('ADMIN', 'TEACHER', 'STUDENT', 'PARENT'), controller.getAll.bind(controller));
 
 /**
  * @swagger
@@ -53,7 +53,7 @@ router.get('/', authMiddleware, controller.getAll.bind(controller));
  *       200: { description: Teacher details }
  *       404: { description: Teacher not found }
  */
-router.get('/:id', authMiddleware, controller.getById.bind(controller));
+router.get('/:id', authMiddleware, authorizeRoles('ADMIN', 'TEACHER', 'STUDENT', 'PARENT'), controller.getById.bind(controller));
 
 router.put(
   '/:id',

@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { AuthController } from '../controllers/auth.controller';
 import { validateRequest } from '../middleware/validator.middleware';
-import { authMiddleware } from '../middleware/auth.middleware';
+import { authMiddleware, authorizeRoles } from '../middleware/auth.middleware';
 import { registerSchema, loginSchema } from '../validators/schemas';
 
 const router = Router();
@@ -34,7 +34,13 @@ const controller = new AuthController();
  *       409: { description: Email already registered }
  *       422: { description: Validation error }
  */
-router.post('/register', validateRequest(registerSchema), controller.register.bind(controller));
+router.post(
+  '/register',
+  authMiddleware,
+  authorizeRoles('ADMIN'),
+  validateRequest(registerSchema),
+  controller.register.bind(controller)
+);
 
 /**
  * @swagger

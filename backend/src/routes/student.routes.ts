@@ -50,7 +50,7 @@ router.post(
  *     responses:
  *       200: { description: List of students }
  */
-router.get('/', authMiddleware, controller.getAll.bind(controller));
+router.get('/', authMiddleware, authorizeRoles('ADMIN', 'TEACHER'), controller.getAll.bind(controller));
 
 /**
  * @swagger
@@ -68,7 +68,7 @@ router.get('/', authMiddleware, controller.getAll.bind(controller));
  *       200: { description: Student details }
  *       404: { description: Student not found }
  */
-router.get('/:id', authMiddleware, controller.getById.bind(controller));
+router.get('/:id', authMiddleware, authorizeRoles('ADMIN', 'TEACHER', 'STUDENT', 'PARENT'), controller.getById.bind(controller));
 
 /**
  * @swagger
@@ -85,7 +85,7 @@ router.get('/:id', authMiddleware, controller.getById.bind(controller));
  *     responses:
  *       200: { description: Students in class }
  */
-router.get('/class/:classId', authMiddleware, controller.getByClass.bind(controller));
+router.get('/class/:classId', authMiddleware, authorizeRoles('ADMIN', 'TEACHER'), controller.getByClass.bind(controller));
 
 /**
  * @swagger

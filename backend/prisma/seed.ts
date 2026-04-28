@@ -52,6 +52,9 @@ async function main(): Promise<void> {
   const parentUser2 = await prisma.user.create({
     data: { email: 'parent.wilson@gmail.com', password: passwordHash, role: UserRole.PARENT },
   });
+  const parentUser3 = await prisma.user.create({
+    data: { email: 'parent.patel@gmail.com', password: passwordHash, role: UserRole.PARENT },
+  });
 
   const studentUser1 = await prisma.user.create({
     data: { email: 'alice.doe@student.educore.com', password: passwordHash, role: UserRole.STUDENT },
@@ -75,6 +78,9 @@ async function main(): Promise<void> {
   });
   const parent2 = await prisma.parent.create({
     data: { userId: parentUser2.id, firstName: 'Linda', lastName: 'Wilson', phoneNumber: '+1-555-0102' },
+  });
+  const parent3 = await prisma.parent.create({
+    data: { userId: parentUser3.id, firstName: 'Sunita', lastName: 'Patel', phoneNumber: '+1-555-0103' },
   });
 
   // ━━━ Classes ━━━
@@ -118,7 +124,7 @@ async function main(): Promise<void> {
   const student4 = await prisma.student.create({
     data: {
       userId: studentUser4.id, firstName: 'Diana', lastName: 'Patel',
-      dateOfBirth: new Date('2010-11-30'), classId: class10A.id,
+      dateOfBirth: new Date('2010-11-30'), classId: class10A.id, parentId: parent3.id,
     },
   });
   const student5 = await prisma.student.create({

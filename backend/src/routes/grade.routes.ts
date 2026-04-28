@@ -40,7 +40,7 @@ router.post(
  *     responses:
  *       200: { description: Grades retrieved }
  */
-router.get('/student/:studentId', authMiddleware, controller.getByStudent.bind(controller));
+router.get('/student/:studentId', authMiddleware, authorizeRoles('ADMIN', 'TEACHER', 'STUDENT', 'PARENT'), controller.getByStudent.bind(controller));
 
 /**
  * @swagger
@@ -57,7 +57,7 @@ router.get('/student/:studentId', authMiddleware, controller.getByStudent.bind(c
  *     responses:
  *       200: { description: Grade averages calculated }
  */
-router.get('/student/:studentId/average', authMiddleware, controller.getAverage.bind(controller));
+router.get('/student/:studentId/average', authMiddleware, authorizeRoles('ADMIN', 'TEACHER', 'STUDENT', 'PARENT'), controller.getAverage.bind(controller));
 
 router.put(
   '/:id',

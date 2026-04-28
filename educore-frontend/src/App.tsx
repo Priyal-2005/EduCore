@@ -17,6 +17,7 @@ import { AddStudent } from './pages/Students/AddStudent';
 import { TeacherList } from './pages/Teachers/TeacherList';
 import { GradesManagement } from './pages/Grades/GradesManagement';
 import { AttendanceTracker } from './pages/Attendance/AttendanceTracker';
+import { ProtectedRoute } from './components/layout/ProtectedRoute';
 
 const AppRoutes = () => {
   const { isAuthenticated } = useAuth();
@@ -35,21 +36,28 @@ const AppRoutes = () => {
         />
 
         {/* Protected Routes inside MainLayout */}
-        <Route 
-          element={isAuthenticated ? <MainLayout /> : <Navigate to="/login" />}
-        >
-          <Route path="/" element={<Dashboard />} />
-          
-          <Route path="/students" element={<StudentList />} />
-          <Route path="/students/add" element={<AddStudent />} />
-          
-          <Route path="/teachers" element={<TeacherList />} />
-          
-          <Route path="/timetables" element={<AddTimetable />} />
-          
-          <Route path="/grades" element={<GradesManagement />} />
-          
-          <Route path="/attendance" element={<AttendanceTracker />} />
+        <Route element={<ProtectedRoute />}>
+          <Route element={<MainLayout />}>
+            <Route path="/" element={<Dashboard />} />
+            
+            {/* Admin only routes */}
+            <Route element={<ProtectedRoute allowedRoles={['ADMIN']} />}>
+              <Route path="/students" element={<StudentList />} />
+              <Route path="/students/add" element={<AddStudent />} />
+              <Route path="/teachers" element={<TeacherList />} />
+            </Route>
+
+            {/* Admin & Teacher routes */}
+            <Route element={<ProtectedRoute allowedRoles={['ADMIN', 'TEACHER']} />}>
+              <Route path="/attendance" element={<AttendanceTracker />} />
+            </Route>
+
+            {/* Multi-role routes */}
+            <Route element={<ProtectedRoute allowedRoles={['ADMIN', 'TEACHER', 'STUDENT', 'PARENT']} />}>
+              <Route path="/timetables" element={<AddTimetable />} />
+              <Route path="/grades" element={<GradesManagement />} />
+            </Route>
+          </Route>
         </Route>
         
         {/* Catch all */}

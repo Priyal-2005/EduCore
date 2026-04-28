@@ -43,9 +43,9 @@ router.post(
   controller.create.bind(controller)
 );
 
-router.get('/', authMiddleware, controller.getAll.bind(controller));
-router.get('/:id', authMiddleware, controller.getById.bind(controller));
-router.get('/class/:classId', authMiddleware, controller.getByClass.bind(controller));
+router.get('/', authMiddleware, authorizeRoles('ADMIN', 'TEACHER', 'STUDENT', 'PARENT'), controller.getAll.bind(controller));
+router.get('/:id', authMiddleware, authorizeRoles('ADMIN', 'TEACHER', 'STUDENT', 'PARENT'), controller.getById.bind(controller));
+router.get('/class/:classId', authMiddleware, authorizeRoles('ADMIN', 'TEACHER', 'STUDENT', 'PARENT'), controller.getByClass.bind(controller));
 router.delete('/:id', authMiddleware, authorizeRoles('ADMIN'), controller.delete.bind(controller));
 
 export default router;

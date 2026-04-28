@@ -47,8 +47,8 @@ router.post(
   controller.markBulk.bind(controller)
 );
 
-router.get('/student/:studentId', authMiddleware, controller.getByStudent.bind(controller));
-router.get('/class/:classId', authMiddleware, controller.getByClassAndDate.bind(controller));
+router.get('/student/:studentId', authMiddleware, authorizeRoles('ADMIN', 'TEACHER', 'STUDENT', 'PARENT'), controller.getByStudent.bind(controller));
+router.get('/class/:classId', authMiddleware, authorizeRoles('ADMIN', 'TEACHER'), controller.getByClassAndDate.bind(controller));
 router.put(
   '/:id',
   authMiddleware,
