@@ -22,7 +22,7 @@ export class StudentController {
     }
   }
 
-  async getAll(req: Request, res: Response, next: NextFunction): Promise<void> {
+  async getAll(_req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const students = await this.studentService.getAllStudents();
       res.status(200).json(successResponse(students, 'Students retrieved'));

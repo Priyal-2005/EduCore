@@ -8,7 +8,7 @@ import { Input } from '../../components/ui/input';
 export const GradesManagement = () => {
   const { addGrade, loading } = useGrades();
   const { classes } = useClasses();
-  const { students, fetchStudents } = useStudents();
+  const { students } = useStudents();
   
   const [selectedClass, setSelectedClass] = useState('');
   const [formData, setFormData] = useState({
@@ -25,7 +25,7 @@ export const GradesManagement = () => {
   // When class changes, we should ideally fetch students for that class.
   // We'll just filter the existing fetched students for now if they're loaded,
   // or you could call fetchStudentsByClass.
-  const classStudents = students.filter(s => selectedClass ? s.classId === parseInt(selectedClass) : true);
+  const classStudents = students.filter((s: any) => selectedClass ? s.classId === parseInt(selectedClass) : true);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

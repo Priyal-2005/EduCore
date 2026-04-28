@@ -1,5 +1,5 @@
 import prisma from '../config/database';
-import { IUser, RegisterDTO } from '../types/auth.types';
+import { IUser } from '../types/auth.types';
 import { UserRole } from '../types/common.types';
 
 /**

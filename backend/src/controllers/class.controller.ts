@@ -18,7 +18,7 @@ export class ClassController {
     }
   }
 
-  async getAll(req: Request, res: Response, next: NextFunction): Promise<void> {
+  async getAll(_req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const classes = await this.classService.getAllClasses();
       res.status(200).json(successResponse(classes, 'Classes retrieved'));

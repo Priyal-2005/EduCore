@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { useStudents } from '../../context/StudentContext';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '../../components/ui/button';

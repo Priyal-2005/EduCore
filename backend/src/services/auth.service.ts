@@ -7,7 +7,6 @@ import { RegisterDTO, LoginDTO, AuthResponse, IUser } from '../types/auth.types'
 import { UserRole } from '../types/common.types';
 import { env } from '../config/env';
 import {
-  BadRequestError,
   ConflictError,
   UnauthorizedError,
   NotFoundError,

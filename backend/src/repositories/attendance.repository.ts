@@ -18,7 +18,7 @@ export class AttendanceRepository {
         date: data.date,
         status: data.status,
       },
-    });
+    }) as unknown as Promise<IAttendance>;
   }
 
   async createMany(records: CreateAttendanceDTO[]): Promise<number> {

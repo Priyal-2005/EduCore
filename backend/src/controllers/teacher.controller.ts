@@ -18,7 +18,7 @@ export class TeacherController {
     }
   }
 
-  async getAll(req: Request, res: Response, next: NextFunction): Promise<void> {
+  async getAll(_req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const teachers = await this.teacherService.getAllTeachers();
       res.status(200).json(successResponse(teachers, 'Teachers retrieved'));

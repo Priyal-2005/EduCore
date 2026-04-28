@@ -18,7 +18,7 @@ export class TimetableController {
     }
   }
 
-  async getAll(req: Request, res: Response, next: NextFunction): Promise<void> {
+  async getAll(_req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const entries = await this.timetableService.getAll();
       res.status(200).json(successResponse(entries, 'Timetable retrieved'));

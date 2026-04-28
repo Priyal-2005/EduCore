@@ -48,7 +48,7 @@ app.use('/api', routes);
 app.use(errorMiddleware);
 
 // ── Start server ──
-app.listen(env.port, () => {
+app.listen(Number(env.port), '127.0.0.1', () => {
   logger.info(`🚀 EduCore server running on port ${env.port}`);
   logger.info(`📚 Swagger docs: http://localhost:${env.port}/api-docs`);
   logger.info(`🏥 Health check: http://localhost:${env.port}/health`);
