@@ -1,7 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { GradeService } from '../services/grade.service';
 import { successResponse } from '../utils/response.util';
-import { ForbiddenError } from '../utils/errors';
 
 export class GradeController {
   private gradeService: GradeService;
