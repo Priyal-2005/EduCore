@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { StudentService } from '../services/student.service';
 import { successResponse } from '../utils/response.util';
+import { ForbiddenError } from '../utils/errors';
 
 /**
  * Student Controller — HTTP request handling ONLY.
@@ -34,6 +35,11 @@ export class StudentController {
   async getById(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const student = await this.studentService.getStudentById(Number(req.params.id));
+      
+      if (req.user!.role === 'STUDENT' && student.userId !== req.user!.userId) {
+        throw new ForbiddenError('Students can only access their own profile');
+      }
+      
       res.status(200).json(successResponse(student, 'Student retrieved'));
     } catch (error) {
       next(error);
